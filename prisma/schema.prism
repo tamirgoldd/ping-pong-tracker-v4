@@ -1,0 +1,26 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Player {
+  id         Int      @id @default(autoincrement())
+  name       String
+  createdAt  DateTime @default(now())
+  matchesWon  Match[] @relation("Winner")
+  matchesLost Match[] @relation("Loser")
+}
+
+model Match {
+  id        Int      @id @default(autoincrement())
+  winnerId  Int
+  loserId   Int
+  playedAt  DateTime @default(now())
+
+  winner    Player   @relation("Winner", fields: [winnerId], references: [id])
+  loser     Player   @relation("Loser", fields: [loserId], references: [id])
+}
